@@ -6,10 +6,10 @@
 
 # Stay awhile and listen
 
-* Read the [FAQ](http://wiki.mooege.org/FAQ) and check the [wiki](http://wiki.mooege.org/) before asking!
-* Read the [WARNING](https://github.com/mooege/mooege/blob/master/WARNING) before starting to use this software!
-* Check out [mooege.org](http://www.mooege.org) and the [forums](http://www.mooege.org/index).
-* IRC (**irc.synirc.net**):
+* (DEAD) Read the [FAQ](http://wiki.mooege.org/FAQ) and check the [wiki](http://wiki.mooege.org/) before asking!
+* (DEAD) Read the [WARNING](https://github.com/mooege/mooege/blob/master/WARNING) before starting to use this software!
+* (DEAD) Check out [mooege.org](http://www.mooege.org) and the [forums](http://www.mooege.org/index).
+* (ALMOST DEAD NO INFO NO DEV) IRC (**irc.synirc.net**):
   - **#mooege.chat** (general chat)
   - **#mooege** (dev talk)
   - **#mooege.announce** (_only_ announcements and the commit feed)
