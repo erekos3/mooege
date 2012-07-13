@@ -33,6 +33,8 @@ using Mooege.Core.GS.Map;
 using Mooege.Core.MooNet.Commands;
 using Mooege.Core.MooNet.Games;
 using Mooege.Net.GS.Message.Definitions.Inventory;
+using Mooege.Net.GS.Message.Definitions.Quest;
+using Mooege.Core.GS.Common.Types.SNO;
 using Mooege.Net.MooNet;
 using System.Text;
 using Monster = Mooege.Core.GS.Actors.Monster;
@@ -214,6 +216,33 @@ namespace Mooege.Core.GS.Games
         }
     }
 
+    [CommandGroup("location", "Gives player location IG.\n Usage : location")]
+    public class LocationCommand : CommandGroup
+    {
+        [DefaultCommand]
+        public string Location(string[] @params, MooNetClient invokerClient)
+        {
+            if (invokerClient == null)
+                return "You can not invoke this command from console.";
+
+            if (invokerClient.InGameClient == null)
+                return "You can only invoke this command while ingame.";
+
+            var player = invokerClient.InGameClient.Player;
+            
+            var position = new Vector3D(player.Position.X ,
+                                           player.Position.Y ,
+                                           player.Position.Z);
+
+                       
+
+            player.Toon.GameAccount.NotifyUpdate(); // probably not needed
+            return string.Format(" Player Toon location is : {0}", position);
+        }
+    }
+
+
+
     [CommandGroup("item", "Spawns an item (with a name or type).\nUsage: item [type <type>|<name>] [amount]")]
     public class ItemCommand : CommandGroup
     {
@@ -353,7 +382,7 @@ namespace Mooege.Core.GS.Games
     }
 
 
-    [CommandGroup("quest", "Retrieves information about quest states and manipulates quest progress.\n Usage: quest [triggers | trigger eventType eventValue | advance snoQuest]")]
+    [CommandGroup("quest", "Retrieves information about quest states and manipulates quest progress.\n Usage: quest [triggers | triggersBonus | trigger eventType eventValue | triggerBonus eventType eventValue | advance snoQuest]")]
     public class QuestCommand : CommandGroup
     {
         [DefaultCommand]
@@ -396,11 +425,47 @@ namespace Mooege.Core.GS.Games
                 return this.Fallback();
 
             if (@params.Count() < 2)
-                return "Invalid arguments. Type 'help lookup trigger' to get help.";
+                return "Invalid arguments. Type 'help quest triggers' to get help.";
 
             invokerClient.InGameClient.Game.Quests.Notify((Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType)Int32.Parse(@params[0]), Int32.Parse(@params[1]));
             return "Triggered";
         }
+
+        [Command("sendmessage", "Directly send a message to the client\n Usage : snoQuest snoLevelArea(-1) stepID taskIndex counter check(0|1)")]
+        public string SendMessage(string[] @params, MooNetClient invokerClient)
+        {
+            if (@params == null)
+                return this.Fallback();
+
+            if (@params.Count() < 6)
+                return "Invalid arguments. Type 'help quest sendmessage ' to get help.";
+
+            invokerClient.InGameClient.Player.InGameClient.SendMessage( new QuestCounterMessage()
+                    {
+                        snoQuest = int.Parse(@params[0]), 
+                        snoLevelArea = int.Parse(@params[1]) ,
+                        StepID = int.Parse(@params[2]), 
+                        TaskIndex = int.Parse(@params[3]),
+                        Counter = int.Parse(@params[4]), 
+                        Checked = int.Parse(@params[5])
+                    });
+            return "Triggered";
+        }
+
+        [Command("bonus", "Triggers a single quest bonus objective\n Usage : triggerBonus type value")]
+        public string Bonus(string[] @params, MooNetClient invokerClient)
+        {
+            if (@params == null)
+                return this.Fallback();
+
+            if (@params.Count() < 2)
+                return "Invalid arguments. Type 'help quest bonus' to get help.";
+
+            invokerClient.InGameClient.Game.Quests.NotifyBonus((Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType)Int32.Parse(@params[0]), Int32.Parse(@params[1]));
+            return "Triggered";
+        }
+
+
 
         [Command("triggers", "lists all current quest triggers")]
         public string Triggers(string[] @params, MooNetClient invokerClient)
@@ -411,6 +476,32 @@ namespace Mooege.Core.GS.Games
                 foreach (var objectiveSet in quest.CurrentStep.ObjectivesSets)
                     foreach (var objective in objectiveSet.Objectives)
                         returnValue.AppendLine(String.Format("{0}, {1} ({2}) - {3}", quest.SNOHandle.ToString(), objective.ObjectiveType, (int)objective.ObjectiveType, objective.ObjectiveValue));
+
+            return returnValue.ToString();
+        }
+
+        [Command("triggerscurrentbonus", "lists all bonus triggers for current step in each quest ")]
+        public string TriggersCurrentBonus(string[] @params, MooNetClient invokerClient)
+        {
+            StringBuilder returnValue = new StringBuilder();
+
+            foreach (var quest in invokerClient.InGameClient.Game.Quests)
+                foreach (var objectiveSet in quest.CurrentStep.bonusObjectives)
+                    foreach (var objective in objectiveSet)
+                        returnValue.AppendLine(String.Format("{0}, {1} ({2}) - {3}", quest.SNOHandle.ToString(), objective.ObjectiveType, (int)objective.ObjectiveType, objective.ObjectiveValue));
+
+            return returnValue.ToString();
+        }
+
+        [Command("triggersbonus", "lists all current quest bonus triggers")]
+        public string TriggersBonus(string[] @params, MooNetClient invokerClient)
+        {
+            StringBuilder returnValue = new StringBuilder();
+
+            foreach (var quest in invokerClient.InGameClient.Game.Quests.Quests.Values)
+                foreach (var objectiveSet in quest.CurrentStep.bonusObjectives)
+                    foreach (var objective in objectiveSet)
+                        returnValue.AppendLine(String.Format("{0}, {1} ({2}) - {3}", quest.SNOHandle.ToString(), objective.ID, (int)objective.ObjectiveType, objective.ObjectiveValue));
 
             return returnValue.ToString();
         }

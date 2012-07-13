@@ -55,7 +55,38 @@ namespace Mooege.Core.GS.Games
         /// <param name="snoQuest">snoID of the quest to advance</param>
         public void Advance(int snoQuest)
         {
+            Logger.Debug(" Advancing quest through quest manager ");
             Quests[snoQuest].Advance();
+        }
+        
+        /// <summary>
+        /// Call this, to trigger quest progress if a certain event has occured
+        /// </summary>
+        public void NotifyQuest(int snoQuest, Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType type, int value)
+        {
+            Logger.Debug(" (NotifyQuest) through QuestManager for quest {2}, type {0} and value {1} ", type, value, snoQuest);
+            Quests[snoQuest].Notify(type, value);
+        }
+
+        ///// <summary>
+        ///// Debug method. 
+        ///// </summary>
+        ///// <param name="snoQuest">snoID of the quest to check</param>
+        //public void UpdateBonus(int snoQuest, int taskID)
+        //{            
+        //    Logger.Debug(" UpdateBonus Quest {0} in step {1}, special bonus task is {3} ", snoQuest, Quests[snoQuest].CurrentStep.QuestStepID, taskID);
+
+        //}
+
+        /// <summary>
+        /// Call this, to trigger quest progress in bonus objectives for certain event occured
+        /// </summary>
+        public void NotifyBonus(Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType type, int value)
+        {
+            Logger.Debug(" NotifyBonus through QuestManager for type {0} and value {1} ", type, value);
+
+            foreach (var quest in Quests.Values)
+                (quest as QuestProgressHandler).NotifyBonus(type, value);
         }
 
         /// <summary>
@@ -63,6 +94,8 @@ namespace Mooege.Core.GS.Games
         /// </summary>
         public void Notify(Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType type, int value)
         {
+            //Logger.Debug(" Notify through QuestManager for type {0} and value {1} ", type, value);
+
             foreach (var quest in Quests.Values)
                 (quest as QuestProgressHandler).Notify(type, value);
         }
