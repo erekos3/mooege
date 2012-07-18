@@ -31,6 +31,8 @@ using System.Threading;
 using Mooege.Core.GS.Common.Types.TagMap;
 using Mooege.Core.GS.Actors;
 using Mooege.Core.GS.Objects;
+using Mooege.Core.GS.Actors.Implementations; // erekose
+using Mooege.Core.GS.AI; //erekose
 
 
 namespace Mooege.Core.GS.QuestEvents.Implementations
@@ -99,6 +101,26 @@ namespace Mooege.Core.GS.QuestEvents.Implementations
                     setActorOperable(world, 3739, true);
                 });
             });
+
+            // check rumford state :p
+            var rumfordActor = world.GetActorBySNO(3739);
+
+            // display real type for rumford actor
+            Logger.Debug(" Rumford has type {0}", rumfordActor.GetType());
+
+            //var rumfordBrain = (rumfordActor as Living).Brain;
+            //try
+            //{
+            //    Logger.Debug(" Rumford as a brain {0}, activating now ! ", (rumfordActor as CaptainRumford).Brain);
+            //    (rumfordActor as CaptainRumford).Brain.Activate();
+
+            //}
+            //catch (System.NullReferenceException e)
+            //{
+            //    Logger.Debug(" brain in rumford has a lots of problems !");
+            //}
+
+
         }
 
         //This is the way we Listen for mob killing events.

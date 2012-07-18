@@ -19,6 +19,7 @@
 using System;
 using System.Threading;
 using System.Windows.Forms;
+using System.Text;
 using Mooege.Core.GS.Map;
 using Mooege.Core.GS.Map.Debug;
 using Mooege.Core.GS.Players;
@@ -87,44 +88,49 @@ namespace Mooege.Core.GS.Games
         //        return output.ToString();
         //    }
 
-        //    [Command("inrange", "Lists objects in range of player\nUsage: debug inrange [player@email]")]
-        //    public string InRange(string[] @params, MooNetClient invokerClient)
-        //    {
-        //        Player player;
+        [Command("inrange", "Lists objects in range of player\nUsage: debug inrange [player@email]")]
+        public string InRange(string[] @params, MooNetClient invokerClient)
+        {
+            
+            if (invokerClient == null)
+                return "You can not invoke this command from console.";
 
-        //        if (invokerClient != null && invokerClient.InGameClient != null)
-        //            player = invokerClient.InGameClient.Player;
-        //        else
-        //        {
-        //            if (@params.Count() < 1)
-        //                return "Invalid arguments. Type 'help debug inrange' to get help.";
+            if (invokerClient.InGameClient == null)
+                return "You can only invoke this command while ingame.";
 
-        //            var account = AccountManager.GetAccountByEmail(@params[0]);
-        //            if (account == null)
-        //                return string.Format("No account with email: {0} exists.", @params[0]);
+            var player = invokerClient.InGameClient.Player;
+            
+            //else
+                //{
+                //    if (@params.Length < 1)
+                //        return "Invalid arguments. Type 'help debug inrange' to get help.";
 
-        //            if (account.LoggedInClient == null || account.LoggedInClient.InGameClient == null)
-        //                return string.Format("Account {0} is not in-game.", @params[0]);
+                //    var account = AccountManager.GetAccountByEmail(@params[0]);
+                //    if (account == null)
+                //        return string.Format("No account with email: {0} exists.", @params[0]);
 
-        //            player = account.LoggedInClient.InGameClient.Player;
-        //        }
+                //    if (account.LoggedInClient == null || account.LoggedInClient.InGameClient == null)
+                //        return string.Format("Account {0} is not in-game.", @params[0]);
 
-        //        var output = new StringBuilder("Scenes In Range:" + Environment.NewLine);
+                //    player = account.LoggedInClient.InGameClient.Player;
+                //}
 
-        //        foreach (var scene in player.GetScenesInRange())
-        //        {
-        //            output.Append(scene + Environment.NewLine);
-        //        }
+                var output = new StringBuilder("Scenes In Range:" + Environment.NewLine);
 
-        //        output.Append("Actors In Range:" + Environment.NewLine);
+                foreach (var scene in player.GetScenesInRange())
+                {
+                    output.Append(scene + Environment.NewLine);
+                }
 
-        //        foreach (var actor in player.GetActorsInRange())
-        //        {
-        //            output.Append(actor + Environment.NewLine);
-        //        }
+                output.Append("Actors In Range:" + Environment.NewLine);
 
-        //        return output.ToString();
-        //    }
+                foreach (var actor in player.GetActorsInRange(float.Parse(@params[0])))
+                {
+                    output.Append(actor + Environment.NewLine);
+                }
+
+                return output.ToString();           
+        }
 
         [CommandGroup("draw", "Draws current world's visualization.\nUsage: draw [worldId]")]
         public class DrawCommand : CommandGroup

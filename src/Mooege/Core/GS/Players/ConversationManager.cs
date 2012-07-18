@@ -250,12 +250,21 @@ namespace Mooege.Core.GS.Players
             //TODO: Handle each conversation type
             if (this.asset.ConversationType == ConversationTypes.QuestEvent)
             {
-                logger.Debug("Handling conversation type event for Conversation: {0}", this.SNOId);
+                logger.Debug("Handling conversation type QuestEvent for Conversation: {0}", this.SNOId);
                 if (this.manager.QuestEventDict.ContainsKey((uint)this.SNOId))
                 {
-                    logger.Info("Start cov");
+                    logger.Info(" (EndConversation) Start cov");
                     this.manager.QuestEventDict[(uint)this.SNOId].Execute(this.player.World);
                 }
+                else
+                {
+                    logger.Debug("  (EndConversation) Conversation number {0} is linked to a Quest Event, it should be implemented ", this.SNOId);
+                }
+            }
+            else
+            {
+                logger.Debug("  (EndConversation) Conversation type {0} for Conversation: {1} not implemented", this.asset.ConversationType, this.SNOId);
+
             }
 
             if (ConversationEnded != null)
@@ -364,9 +373,13 @@ namespace Mooege.Core.GS.Players
 
         private void InitQuestEvents()
         {
+            // this is were we store the active quests when they are implemented 
+            // warning the number here should match that of conversation which ARE considered as QuestEvent from the asset db
             this.QuestEventDict.Add(151087, new SurviveTheWaves());
             this.QuestEventDict.Add(151123, new LeahInn());
-            this.QuestEventDict.Add(198503, new _198503());
+            this.QuestEventDict.Add(198503, new _198503()); // erekose
+            this.QuestEventDict.Add(198521, new _198521()); // erekose
+            
         }
 
         /// <summary>
@@ -418,6 +431,8 @@ namespace Mooege.Core.GS.Players
         void ConversationEnded(object sender, EventArgs e)
         {
             Conversation conversation = sender as Conversation;
+            logger.Debug(" (ConversationEnded) Sending a notify with type {0} and value {1}", QuestStepObjectiveType.HadConversation, conversation.SNOId);
+
             quests.Notify(QuestStepObjectiveType.HadConversation, conversation.SNOId);
 
             lock (openConversations)

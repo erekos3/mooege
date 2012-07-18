@@ -753,6 +753,9 @@ namespace Mooege.Core.GS.Actors
             if (Tags.ContainsKey(MarkerKeys.ConversationList))
             {
                 int snoConversationList = Tags[MarkerKeys.ConversationList].Id;
+
+                Logger.Debug(" (ReadTags) actor {0} has a conversation list {1}", NameSNOId, snoConversationList);
+
                 if (Mooege.Common.MPQ.MPQStorage.Data.Assets[SNOGroup.ConversationList].ContainsKey(snoConversationList))
                     ConversationList = Mooege.Common.MPQ.MPQStorage.Data.Assets[SNOGroup.ConversationList][snoConversationList].Data as Mooege.Common.MPQ.FileFormats.ConversationList;
                 else Logger.Warn("Actor {0} is tagged with unknown ConversationList {1}", NameSNOId, snoConversationList);

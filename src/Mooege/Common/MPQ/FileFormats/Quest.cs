@@ -342,7 +342,8 @@ namespace Mooege.Common.MPQ.FileFormats
         TimedEventExpired = 10,
         KillGroup = 11,
         GameFlagSet = 12,
-        EventReceived = 13
+        EventReceived = 13, 
+        BonusStep = 14 // erekose
     }
 
     public enum QuestType

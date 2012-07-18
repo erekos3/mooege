@@ -55,7 +55,7 @@ namespace Mooege.Core.GS.Games
         /// <param name="snoQuest">snoID of the quest to advance</param>
         public void Advance(int snoQuest)
         {
-            Logger.Debug(" Advancing quest through quest manager ");
+            Logger.Debug(" (Advance) Advancing quest through quest manager ");
             Quests[snoQuest].Advance();
         }
         
@@ -86,7 +86,10 @@ namespace Mooege.Core.GS.Games
             Logger.Debug(" NotifyBonus through QuestManager for type {0} and value {1} ", type, value);
 
             foreach (var quest in Quests.Values)
-                (quest as QuestProgressHandler).NotifyBonus(type, value);
+            {
+                if (!quest.IsDone()) //do not notify ended quest :p
+                    (quest as QuestProgressHandler).NotifyBonus(type, value);
+            }
         }
 
         /// <summary>
@@ -97,7 +100,10 @@ namespace Mooege.Core.GS.Games
             //Logger.Debug(" Notify through QuestManager for type {0} and value {1} ", type, value);
 
             foreach (var quest in Quests.Values)
-                (quest as QuestProgressHandler).Notify(type, value);
+            {
+                if (!quest.IsDone()) //do not notify ended quest :p
+                    (quest as QuestProgressHandler).Notify(type, value);
+            }
         }
 
         public IEnumerator<Quest> GetEnumerator()

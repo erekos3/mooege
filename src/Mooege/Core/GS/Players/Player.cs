@@ -1055,6 +1055,7 @@ namespace Mooege.Core.GS.Players
 
         public override void OnTeleport()
         {
+            Logger.Debug(" Player was teleported ");
             this.RevealScenesToPlayer(); // reveal scenes in players proximity.
             this.RevealActorsToPlayer(); // reveal actors in players proximity.
         }

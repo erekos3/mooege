@@ -104,6 +104,10 @@ namespace Mooege.Core.GS.Actors.Implementations
             {
                 ActorID = this.DynamicID
             });
+
+            //erekose we set the flag for "operated"
+            this.Attributes[Net.GS.Message.GameAttribute.Gizmo_Has_Been_Operated] = true;
+
         }
 
         public override bool Reveal(Player player)

@@ -34,7 +34,6 @@ using Mooege.Core.MooNet.Commands;
 using Mooege.Core.MooNet.Games;
 using Mooege.Net.GS.Message.Definitions.Inventory;
 using Mooege.Net.GS.Message.Definitions.Quest;
-using Mooege.Core.GS.Common.Types.SNO;
 using Mooege.Net.MooNet;
 using System.Text;
 using Monster = Mooege.Core.GS.Actors.Monster;

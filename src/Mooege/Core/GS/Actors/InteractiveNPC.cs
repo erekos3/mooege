@@ -31,11 +31,17 @@ using Mooege.Net.GS.Message.Definitions.Hireling;
 using Mooege.Core.GS.Games;
 using Mooege.Core.GS.Common.Types.TagMap;
 using Mooege.Net.GS.Message.Definitions.Artisan;
+using Mooege.Common.Logging;
+
 
 namespace Mooege.Core.GS.Actors
 {
     public class InteractiveNPC : NPC, IMessageConsumer
     {
+
+        public static Logger Logger = new Logger("InteractiveNPC");
+
+
         public List<IInteraction> Interactions { get; private set; }
         public List<ConversationInteraction> Conversations { get; private set; }
 
@@ -53,13 +59,14 @@ namespace Mooege.Core.GS.Actors
             UpdateConversationList(); // show conversations with no quest dependency
         }
 
-        void quest_OnQuestProgress(Quest quest)
+        void quest_OnQuestProgress(Quest quest) // shadows Actors'Mooege.Core.GS.Actors.InteractiveNPC.quest_OnQuestProgress(Mooege.Core.GS.Games.Quest)'
         {
+            Logger.Debug(" (quesy_OnQuestProgress) has been called -> updatin conversaton list ");
             UpdateConversationList();
         }
 
         private void UpdateConversationList()
-        {
+        {           
             if (ConversationList != null)
             {
                 var ConversationsNew = new List<int>();
@@ -88,7 +95,10 @@ namespace Mooege.Core.GS.Actors
                     if (Mooege.Common.MPQ.MPQStorage.Data.Assets[Common.Types.SNO.SNOGroup.Conversation].ContainsKey(conversation.ConversationSNO))
                         if ((Mooege.Common.MPQ.MPQStorage.Data.Assets[Common.Types.SNO.SNOGroup.Conversation][conversation.ConversationSNO].Data as Mooege.Common.MPQ.FileFormats.Conversation).I0 == 1)
                             if (conversation.Read == false)
+                            {
+                                Logger.Debug(" (UpdateConversationList) for actor {0}-{1} has unread quest conversation no {2}: ", ActorSNO.Id, ActorSNO.Name, conversation.ConversationSNO);
                                 questConversation = true;
+                            }
 
                 // show the exclamation mark if actor has an unread quest conversation
                 Attributes[GameAttribute.Conversation_Icon, 0] = questConversation ? 1 : 0;

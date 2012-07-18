@@ -665,7 +665,7 @@ namespace Mooege.Net.GS.Message
         public static readonly GameAttributeI Portal_Next_Time = new GameAttributeI(608, 0, -1, 1, 1, "", "", "Portal Next Time", GameAttributeEncoding.Int, 1, 0, 0, 32);
         public static readonly GameAttributeF Repair_Discount_Percent = new GameAttributeF(609, 0, -1, 0, 0, "", "", "Repair_Discount_Percent", GameAttributeEncoding.Float16, 31, 0, 0, 16);
         public static readonly GameAttributeB Resource_Degeneration_Prevented = new GameAttributeB(610, 0, -1, 1, 1, "", "", "Resource_Degeneration_Prevented", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
-        public static readonly GameAttributeB Operatable = new GameAttributeB(611, 0, -1, 4, 1, "", "", "Operatable", GameAttributeEncoding.IntMinMax, 31, 0, 1, 1);
+        public static readonly GameAttributeB Operatable = new GameAttributeB(611, 0, -1, 4, 1, "", "", "Operatable", GameAttributeEncoding.IntMinMax, 31, 0, 1, 1); // operable , right ? Erekose
         public static readonly GameAttributeI Look_Override = new GameAttributeI(612, 0, -1, 0, 1, "", "", "Look_Override", GameAttributeEncoding.Int, 31, 0, 0, 32);
         public static readonly GameAttributeI Spawner_Concurrent_Count_ID = new GameAttributeI(613, -1, -1, 3, 1, "", "", "Spawner_Concurrent_Count_ID", GameAttributeEncoding.Int, 0, 0, 0, 32);
         public static readonly GameAttributeB Disabled = new GameAttributeB(614, 0, -1, 1, 1, "", "", "Disabled", GameAttributeEncoding.IntMinMax, 31, 0, 1, 1);

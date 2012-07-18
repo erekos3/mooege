@@ -18,12 +18,16 @@
 
 using Mooege.Core.GS.Map;
 using Mooege.Core.GS.Common.Types.TagMap;
+using Mooege.Common.Logging;
 
 namespace Mooege.Core.GS.Actors.Implementations
 {
     [HandledSNO(3739)]
     class CaptainRumford : InteractiveNPC
     {
+
+        private static readonly Logger Logger = LogManager.CreateLogger();
+
         public CaptainRumford(World world, int snoID, TagMap tags)
             : base(world, snoID, tags)
         { }
@@ -36,6 +40,11 @@ namespace Mooege.Core.GS.Actors.Implementations
         {
             if (!Tags.ContainsKey(MarkerKeys.ConversationList))
                 Tags.Add(MarkerKeys.ConversationList, new TagMapEntry(MarkerKeys.ConversationList.ID, 108832, 2));
+
+            // int snoConversationList = Tags[MarkerKeys.ConversationList].Id;
+
+            Logger.Debug(" (override ReadTags) forcing conversation list  {0}", Tags[MarkerKeys.ConversationList].Id);
+
 
             base.ReadTags();
         }

@@ -31,7 +31,7 @@ using System.Threading;
 
 namespace Mooege.Core.GS.QuestEvents.Implementations
 {
-    class _198503 : QuestEvent
+    class _198503 : QuestEvent // TristramGuardCaptainIntro_New WretchedQueenIsDead Waypoint_OldTristram
     {
 
         private static readonly Logger Logger = LogManager.CreateLogger();
@@ -43,7 +43,7 @@ namespace Mooege.Core.GS.QuestEvents.Implementations
 
         static int wretchedMotherAID = 219725;
         static int wretchedMotherQueenAID = 176889;
-        static int portalAID= 176007; // portal actor id ? anyobe ?
+        static int portalAID= 192164; // 176007; // portal actor id ? anyobe ?
         static int bonusTaskID = 1; // this is the specific ID to be send to client for updates regarding this very FUCKIN bonus objective (like how hard it was to find..doh')
 
 
@@ -120,30 +120,27 @@ namespace Mooege.Core.GS.QuestEvents.Implementations
                     }
                     if (actorWQM != null)
                     {                        
+                        // ok set a boss health bar for the bitch :;p
+                        actorWQM.Attributes[Net.GS.Message.GameAttribute.Using_Bossbar] = true;
+                        actorWQM.Attributes[Net.GS.Message.GameAttribute.InBossEncounter] = true; // there also an attribute about QuestMonster
+                        
                         //Run Kill Event Listener
                         var ListenerWQMTask = Task<bool>.Factory.StartNew(() => OnWMQKillListener(actorWQM.DynamicID, world));
+                        
                         //Wait for wretched queen mother to be killed.
                         ListenerWQMTask.ContinueWith(delegate //Once killed:
-                        {                            
-                            //world.Game.Quests.Advance(87700);
-                            Logger.Debug("Event finished");
-
-                            // portal + rumford (group)
+                        {                                                       
+                            Logger.Debug(" Wretch Queen Event done !!"); // WretchedQueenIsDead                             
 
                             // portal shit 
                             var portalActorId = world.GetActorBySNO(portalAID);
-                            var ListenerUsePortalTask = Task<bool>.Factory.StartNew(() => OnUseActorListener(portalActorId.DynamicID, world));
+                            var ListenerUsePortalTask = Task<bool>.Factory.StartNew(() => OnUseTeleporterListener(portalActorId.DynamicID, world));
                             //Wait for portal to be used .
                             ListenerUsePortalTask.ContinueWith(delegate //Once killed:
                             {
-                                Logger.Debug(" Portal used :p");
+                                Logger.Debug(" Waypoint_OldTristram Objective done "); // Waypoint_OldTristram
                             });
-
-
-
-                            //conversation with rumford...
-
-
+                            //conversation with rumford... delegated to another class... since we have a nice conversation system :p                            
                         });
                     }
                     else
@@ -225,7 +222,7 @@ namespace Mooege.Core.GS.QuestEvents.Implementations
         }
 
         //just for the use of the portal
-        private bool OnUseActorListener(uint actorDynID, Map.World world)
+        private bool OnUseTeleporterListener(uint actorDynID, Map.World world)
         {
             if (world.HasActor(actorDynID))
             {
@@ -233,14 +230,39 @@ namespace Mooege.Core.GS.QuestEvents.Implementations
 
 
 
+                Logger.Debug(" supposed portal has type {3} has name {0} and state {1} , has gizmo  been operated ? {2} ", actor.NameSNOId, actor.Attributes[Net.GS.Message.GameAttribute.Gizmo_State], actor.Attributes[Net.GS.Message.GameAttribute.Gizmo_Has_Been_Operated], actor.GetType());
+                
                 while (true)
-                {               
-                    
+                {
+                    if (actor.Attributes[Net.GS.Message.GameAttribute.Gizmo_Has_Been_Operated])
+                    {
+                        // for some obnoxious reason we should shoot the poor rumfeld here                       
+                        var actorToShoot = world.GetActorBySNO(3739);
+                        if (actorToShoot != null)
+                        {
+                            Logger.Debug("trying to shoot actor SNO {0}, world contains {1} such actors ", actorToShoot.ActorSNO, world.GetActorsBySNO(3739).Count);
+                            world.Leave(actorToShoot); // or directly remove this shit
+                        }
+                        else
+                        {
+                            Logger.Debug("No actor to shoot yet");
+                        }
+
+                        actorToShoot = world.GetActorBySNO(4580);
+                        if (actorToShoot != null)
+                        {
+                            Logger.Debug("trying to shoot actor SNO {0}, world contains {1} such actors ", actorToShoot.ActorSNO, world.GetActorsBySNO(3739).Count);
+                            world.Leave(actorToShoot); // or directly remove this shit
+                        }
+                        else
+                        {
+                            Logger.Debug("No actor to shoot yet");
+                        }
 
 
-                    world.Game.Quests.NotifyQuest(87700, Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType.EventReceived, -1);
-                    //Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType.KillMonster, 1);
-                    break;
+                        world.Game.Quests.NotifyQuest(87700, Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor, portalAID);
+                        break;
+                    }                                        
                 }
             }
             return true;

@@ -392,6 +392,24 @@ namespace Mooege.Core.GS.Map
                     return actor;
             } return null;
         }
+        
+        // EREKOSE START
+        /// <summary>
+        /// Returns all actors matching a SNO id
+        /// </summary>
+        /// <param name="group"></param>
+        /// <returns></returns>
+        public List<Actor> GetActorsBySNO(int sno)
+        {
+            List<Actor> matchingActors = new List<Actor>();
+            foreach (var actor in this._actors.Values)
+            {
+                if (actor.ActorSNO.Id == sno)
+                    matchingActors.Add(actor);
+            } 
+            return matchingActors;
+        }
+        //EREKOSE END
 
         /// <summary>
         /// Returns true if any actors exist under a well defined group
