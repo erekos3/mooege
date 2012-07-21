@@ -39,7 +39,7 @@ namespace Mooege.Core.GS.QuestEvents.Implementations
         private static readonly Logger Logger = LogManager.CreateLogger();
 
         public LeahInn()
-            : base(151123)
+            : base(151123) // 204113 // 151156
         {
         }
 

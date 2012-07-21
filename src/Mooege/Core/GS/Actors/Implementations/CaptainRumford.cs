@@ -24,10 +24,7 @@ namespace Mooege.Core.GS.Actors.Implementations
 {
     [HandledSNO(3739)]
     class CaptainRumford : InteractiveNPC
-    {
-
-        private static readonly Logger Logger = LogManager.CreateLogger();
-
+    { 
         public CaptainRumford(World world, int snoID, TagMap tags)
             : base(world, snoID, tags)
         { }

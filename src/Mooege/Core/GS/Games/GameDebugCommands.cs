@@ -88,6 +88,24 @@ namespace Mooege.Core.GS.Games
         //        return output.ToString();
         //    }
 
+        [Command("dumpConversationList", " Dump a specific actor conversationList ")]
+        public string DumpConversationList(string[] @params, MooNetClient invokerClient)
+        {
+            if (invokerClient == null)
+                return "You can not invoke this command from console.";
+
+            if (invokerClient.InGameClient == null)
+                return "You can only invoke this command while ingame.";
+            
+            var world = invokerClient.InGameClient.Player.World;
+            var actor = world.GetActorBySNO(int.Parse(@params[0]));
+            actor.dumpConversationList();
+
+
+            return " Executed !! ";
+
+        }
+
         [Command("inrange", "Lists objects in range of player\nUsage: debug inrange [player@email]")]
         public string InRange(string[] @params, MooNetClient invokerClient)
         {

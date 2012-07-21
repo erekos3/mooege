@@ -59,19 +59,175 @@ namespace Mooege.Core.GS.Actors
             UpdateConversationList(); // show conversations with no quest dependency
         }
 
-        void quest_OnQuestProgress(Quest quest) // shadows Actors'Mooege.Core.GS.Actors.InteractiveNPC.quest_OnQuestProgress(Mooege.Core.GS.Games.Quest)'
+        protected override void quest_OnQuestProgress(Quest quest) // shadows Actors'Mooege.Core.GS.Actors.InteractiveNPC.quest_OnQuestProgress(Mooege.Core.GS.Games.Quest)'
         {
-            Logger.Debug(" (quesy_OnQuestProgress) has been called -> updatin conversaton list ");
+            // call base classe update range stuff            
+
+            UpdateQuestRangeVisbility();
+            // Logger.Debug(" (quesy_OnQuestProgress) has been called -> updatin conversaton list ");
             UpdateConversationList();
+            UpdateConversationQuestList(quest);
+            // brutalConversationAddOnQuestEnd(quest);
         }
 
-        private void UpdateConversationList()
-        {           
+
+        //erekose debug function
+        public override void dumpConversationList()
+        {
+            Logger.Debug(" %%%%%%%% REAL DUMPING CONVERSATION LIST FOR INTERACTIVE NPC {0} %%%%%%", NameSNOId);
             if (ConversationList != null)
             {
                 var ConversationsNew = new List<int>();
                 foreach (var entry in ConversationList.ConversationListEntries)
                 {
+                    Logger.Debug(" Conversation Entry number {0} require snoArea {1}  active quest {2} assigned quest {3} quest complete {4} current quest {5} and quest range {6}  ??1 {7} ??2 {8} ", entry.SNOConv, entry.SNOLevelArea, entry.SNOQuestActive, entry.SNOQuestAssigned, entry.SNOQuestComplete, entry.SNOQuestCurrent, entry.SNOQuestRange, entry.Noname1, entry.Noname2);
+
+                    //if (
+                    //    ConversationsNew.Add(entry.SNOConv);
+
+                    //if (Mooege.Common.MPQ.MPQStorage.Data.Assets[Common.Types.SNO.SNOGroup.QuestRange].ContainsKey(entry.SNOQuestRange))
+                    //    if (World.Game.Quests.IsInQuestRange(Mooege.Common.MPQ.MPQStorage.Data.Assets[Common.Types.SNO.SNOGroup.QuestRange][entry.SNOQuestRange].Data as Mooege.Common.MPQ.FileFormats.QuestRange))
+                    //        ConversationsNew.Add(entry.SNOConv);
+
+                    //if (World.Game.Quests.HasCurrentQuest(entry.SNOQuestCurrent, entry.I3))
+                    //    ConversationsNew.Add(entry.SNOConv);
+                }
+            }
+            else
+            {
+                Logger.Debug(" Conversation is empty ... ");
+
+            }
+
+            // I really want to know how to get the shitty  198541 conversation
+            var conv_assets = Mooege.Common.MPQ.MPQStorage.Data.Assets[Common.Types.SNO.SNOGroup.Conversation];
+            var conv_asset  = conv_assets[198541];
+            var conv = conv_asset.Data  as Mooege.Common.MPQ.FileFormats.Conversation;
+
+
+            Logger.Debug(" conv Header SNOId {0} snoQUest{1} I0 {2} I1 {3} I2 {4} I3 {5} I4 {6} snoPriNPC {7} ALT NPC1 {8} ALT NPC2 {9}", conv.Header.SNOId, conv.SNOQuest, conv.I0, conv.I1, conv.I2, conv.I3, conv.I4, conv.I5, conv.I6, conv.SNOPrimaryNpc, conv.SNOAltNpc1, conv.SNOAltNpc2);
+
+            
+
+        }
+
+        // first hack erekose
+        private void brutalConversationAddOnQuestEnd(Quest quest)
+        {
+            if (ActorSNO.Id == 4580) // for now only leah is concerned :p
+            {
+                Logger.Debug(" (brutalCOnversationAssOnQuestEnd) called on quest {0} for actor with dynamic ID {1} ", quest.SNOHandle.Id, DynamicID);
+                if (quest.IsDone())
+                {
+                    // check if NPC has the conversation in its inherited ConversationList
+                    if ( (ConversationList != null))
+                        if (ConversationList.ConversationListEntries != null)
+                            if (ConversationList.ConversationListEntries.Count > 0 )
+                            {
+                                var convlistentries = ConversationList.ConversationListEntries;
+                                bool l_found = false;
+                                foreach (var convlistentry in convlistentries)
+                                {
+                                    if (convlistentry.SNOConv == 198541)
+                                    {
+                                        Logger.Debug(" (brutalCOnversationAssOnQuestEnd) NPC has the conversation 198541 in it inherited ConversationList ");
+                                        l_found = true;
+                                        break;
+                                    }
+                                }
+                                if (!l_found)
+                                    Logger.Debug(" (brutalCOnversationAssOnQuestEnd) NPC DOES NOT HAVE THE conversation 198541 in it inherited ConversationList !! THIS IS BAD !!");
+                            }
+                    //else
+                    //{
+                    //    Logger.Debug(" (brutalCOnversationAssOnQuestEnd) the inherited ConversationList IS NULL OR EMPTY WTF ????");
+                    //}
+    
+                    Logger.Debug(" (brutalCOnversationAssOnQuestEnd) quest is marked as done trying to get the conversation lists ");
+                    // looking for conversation in the whole conversation set !!! 
+                    var conv_assets = Mooege.Common.MPQ.MPQStorage.Data.Assets[Common.Types.SNO.SNOGroup.Conversation];
+                    var convs = from conv_asset in conv_assets.Values
+                                where (conv_asset.Data as Mooege.Common.MPQ.FileFormats.Conversation).SNOQuest == quest.SNOHandle.Id
+                                select (conv_asset.Data as Mooege.Common.MPQ.FileFormats.Conversation);
+                    foreach (var conv in convs)
+                    {
+                        int[] tab = { conv.SNOAltNpc1, conv.SNOAltNpc2, conv.SNOAltNpc3, conv.SNOAltNpc4, conv.SNOPrimaryNpc };
+                        if (tab.Contains(ActorSNO.Id))
+                        {
+                            Logger.Debug(" (brutalCOnversationAssOnQuestEnd) Trying to add conversation : INTERACTIVE NPC {0} is present in Conversation {1} SNO alt NPC where : {2}", ActorSNO.Id, conv.Header.SNOId, tab);
+                            if (Conversations.Exists( x => x.ConversationSNO == conv.Header.SNOId))
+                            {
+                                //RAS 
+                                Logger.Debug(" (brutalCOnversationAssOnQuestEnd) already present doing nothing ");
+                            }
+                            else
+                            {
+                                  Logger.Debug(" (brutalCOnversationAssOnQuestEnd) added !!");
+                                Conversations.Add(new ConversationInteraction(conv.Header.SNOId));
+                            }
+                        }
+                    }
+
+                }
+            }
+
+        }
+
+        private void UpdateConversationQuestList(Quest quest)
+        {
+            if ((ActorSNO.Id == 4580) && DynamicID == 83) // for now only the Leah near the stash
+            {
+                if (quest.IsDone())
+                {
+                    if (ConversationList != null) // this is from Actor
+                    {
+                        var ConversationsNew = new List<int>();
+                        foreach (var entry in ConversationList.ConversationListEntries) // again on actor
+                        {                        
+                            if (entry.SNOQuestComplete == quest.SNOHandle.Id)   // we'll refine later...
+                                ConversationsNew.Add(entry.SNOConv);
+                        }
+
+                        // remove outdates conversation options and add new ones
+                        Conversations = Conversations.Where(x => ConversationsNew.Contains(x.ConversationSNO)).ToList(); // this is in the InteractiveNPC
+                        foreach (var sno in ConversationsNew)
+                            if (!Conversations.Select(x => x.ConversationSNO).Contains(sno))
+                                Conversations.Add(new ConversationInteraction(sno));
+
+                        // search for an unread questconversation
+                        bool questConversation = false;
+                        foreach (var conversation in Conversations) // this is in the InteractiveNPC
+                            if (Mooege.Common.MPQ.MPQStorage.Data.Assets[Common.Types.SNO.SNOGroup.Conversation].ContainsKey(conversation.ConversationSNO))
+                                if ((Mooege.Common.MPQ.MPQStorage.Data.Assets[Common.Types.SNO.SNOGroup.Conversation][conversation.ConversationSNO].Data as Mooege.Common.MPQ.FileFormats.Conversation).I0 == 1)
+                                    if (conversation.Read == false)
+                                    {
+                                        // Logger.Debug(" (UpdateConversationList) for actor {0}-{1} has unread quest conversation no {2}: ", ActorSNO.Id, ActorSNO.Name, conversation.ConversationSNO);
+                                        questConversation = true;
+                                    }
+
+                        // show the exclamation mark if actor has an unread quest conversation
+                        Attributes[GameAttribute.Conversation_Icon, 0] = questConversation ? 1 : 0;
+                        Attributes.BroadcastChangedIfRevealed();
+                    }
+                }
+            }
+        }
+
+
+        private void UpdateConversationList()
+        {
+            // Logger.Debug(" (UpdateConversationList) has been called ");
+            if (ConversationList != null) // this is from Actor
+            {
+                var ConversationsNew = new List<int>();
+                foreach (var entry in ConversationList.ConversationListEntries) // again on actor
+                {
+                    if (entry.SNOConv == 198541)
+                    {
+                        Logger.Debug(" (UpdateConversationList) conv 198541 found for Actor {0} dyn actor {1}", ActorSNO, DynamicID);
+                        Logger.Debug(" (UpdateConversationList) conv 198541 entry quest complete is {0}", entry.SNOQuestComplete);
+                    }
+
                     if (entry.SNOLevelArea == -1 && entry.SNOQuestActive == -1 && entry.SNOQuestAssigned == -1 && entry.SNOQuestComplete == -1 && entry.SNOQuestCurrent == -1 && entry.SNOQuestRange == -1)
                         ConversationsNew.Add(entry.SNOConv);
 
@@ -84,19 +240,19 @@ namespace Mooege.Core.GS.Actors
                 }
 
                 // remove outdates conversation options and add new ones
-                Conversations = Conversations.Where(x => ConversationsNew.Contains(x.ConversationSNO)).ToList();
+                Conversations = Conversations.Where(x => ConversationsNew.Contains(x.ConversationSNO)).ToList(); // this is in the InteractiveNPC
                 foreach (var sno in ConversationsNew)
                     if (!Conversations.Select(x => x.ConversationSNO).Contains(sno))
                         Conversations.Add(new ConversationInteraction(sno));
 
                 // search for an unread questconversation
                 bool questConversation = false;
-                foreach (var conversation in Conversations)
+                foreach (var conversation in Conversations) // this is in the InteractiveNPC
                     if (Mooege.Common.MPQ.MPQStorage.Data.Assets[Common.Types.SNO.SNOGroup.Conversation].ContainsKey(conversation.ConversationSNO))
                         if ((Mooege.Common.MPQ.MPQStorage.Data.Assets[Common.Types.SNO.SNOGroup.Conversation][conversation.ConversationSNO].Data as Mooege.Common.MPQ.FileFormats.Conversation).I0 == 1)
                             if (conversation.Read == false)
                             {
-                                Logger.Debug(" (UpdateConversationList) for actor {0}-{1} has unread quest conversation no {2}: ", ActorSNO.Id, ActorSNO.Name, conversation.ConversationSNO);
+                                // Logger.Debug(" (UpdateConversationList) for actor {0}-{1} has unread quest conversation no {2}: ", ActorSNO.Id, ActorSNO.Name, conversation.ConversationSNO);
                                 questConversation = true;
                             }
 
@@ -109,6 +265,8 @@ namespace Mooege.Core.GS.Actors
 
         public override void OnTargeted(Player player, TargetMessage message)
         {
+            Logger.Debug(" (OnTargeted) the npc has dynID {0}", DynamicID);
+
             player.SelectedNPC = this;
 
             var count = Interactions.Count + Conversations.Count;
@@ -123,6 +281,7 @@ namespace Mooege.Core.GS.Actors
                 UpdateConversationList();
                 return;
             }
+            
 
             NPCInteraction[] npcInters = new NPCInteraction[count];
 
@@ -152,7 +311,7 @@ namespace Mooege.Core.GS.Actors
             {
                 ActorId = this.DynamicID,
                 Effect = Net.GS.Message.Definitions.Effect.Effect.Unknown36
-            });
+            });           
         }
 
         public void Consume(GameClient client, GameMessage message)
@@ -187,6 +346,9 @@ namespace Mooege.Core.GS.Actors
 
             player.Conversations.StartConversation(conversation.ConversationSNO);
             conversation.MarkAsRead();
+
+            UpdateConversationList(); // erekose now the dialogs shit are updated properly :D yay !
+
         }
     }
 }

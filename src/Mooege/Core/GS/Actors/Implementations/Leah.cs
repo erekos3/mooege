@@ -18,6 +18,7 @@
 
 using Mooege.Core.GS.Map;
 using Mooege.Core.GS.Common.Types.TagMap;
+using Mooege.Core.GS.Common.Types.SNO;
 
 namespace Mooege.Core.GS.Actors.Implementations
 {
@@ -28,15 +29,37 @@ namespace Mooege.Core.GS.Actors.Implementations
             : base(world, snoID, tags)
         { }
 
-        // One of the rumfords is not tagged with a conversation list, although his conversation list is available.
-        // there may be two reasons for this: ConversationLists are not used anymore which i doubt as i works beautifully with them
-        // or the information is no longer available in the client which would be possible tagging and stuff is only relevant to the server
-        // TODO If the client lacks all information, we need a system to combine mpq data with custom data
+        // One of the Leah (the one supposed to follw the player in the rescue cain quest 
+        // have a funny conversationID 138264 which is not found I'll replace it with the 198541 conv id
         protected override void ReadTags()
         {
-            if (!Tags.ContainsKey(MarkerKeys.ConversationList))
-                Tags.Add(MarkerKeys.ConversationList, new TagMapEntry(MarkerKeys.ConversationList.ID, 108832, 2));
+        //    var snoConversationList = Tags[MarkerKeys.ConversationList].Id; // this is the wrong conversation list 
 
+        //    if (snoConversationList == 138264)
+        //    {
+        //        Logger.Debug(" (Leah ReadTags) name and ID of conv with wrong stuff {0} - {1} ", Tags[MarkerKeys.ConversationList].Name, Tags[MarkerKeys.ConversationList].Id);
+
+        //        Tags.Replace(new TagKeySNO(MarkerKeys.ConversationList.ID), new TagMapEntry(MarkerKeys.ConversationList.ID, 198541, 2)); // brute force thingy isn't it ?      
+
+        //        Logger.Debug(" (Leah ReadTags) name and ID of conv with corrected stuff {0} - {1} ", Tags[MarkerKeys.ConversationList].Name, Tags[MarkerKeys.ConversationList].Id);
+
+                
+
+        //    }
+
+            //if (snoConversationList == 138264)
+            //{
+            //    Logger.Debug(" (Leah ReadTags) name of conv with wrong stuff {0}", Tags[MarkerKeys.ConversationList].Name);
+            //    Logger.Debug(" (Leah ReadTags) modifying the tag map DIRECTLY ");
+            //    Tags.Add(MarkerKeys.ConversationList, new TagMapEntry( MarkerKeys.ConversationList.ID, 198541, 2));
+                
+                
+            //    //Tags.Add(new TagKeySNO(198541), new TagMapEntry ( , , 2)
+            //    //[MarkerKeys.ConversationList].Id = 198541;
+            //    //ConversationList = Mooege.Common.MPQ.MPQStorage.Data.Assets[SNOGroup.ConversationList][198541].Data as Mooege.Common.MPQ.FileFormats.ConversationList;
+            //}
+
+            // now just fill the actor's ConversationList
             base.ReadTags();
         }
     }

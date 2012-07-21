@@ -187,6 +187,7 @@ namespace Mooege.Common.MPQ
                 {
                     try
                     {
+                        Logger.Debug(" (ProcessAsset) Loading stuff from the DB : group {0} ", asset.Group);                        
                         asset.RunParser();
                     }
                     catch (Exception e)

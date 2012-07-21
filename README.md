@@ -1,6 +1,6 @@
 ###Current Status:
 * You can Login, create characters and enter world.
-* Client requires patching. (Don't patch to the newest patch)
+* Client requires patching. (Don't patch to the newest patch) (Won't do ...)
 
 ***
 
@@ -13,7 +13,7 @@
   - **#mooege.chat** (general chat)
   - **#mooege** (dev talk)
   - **#mooege.announce** (_only_ announcements and the commit feed)
-* [Twitter](http://twitter.com/#!/mooege), [Commit Feed](http://twitter.com/#!/mooegelog)
+* (DEAD) [Twitter](http://twitter.com/#!/mooege), [Commit Feed](http://twitter.com/#!/mooegelog)
 
 # Welcome to mooege
 

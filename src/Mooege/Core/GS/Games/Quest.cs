@@ -65,7 +65,7 @@ namespace Mooege.Core.GS.Games
 
                 public QuestObjective(Mooege.Common.MPQ.FileFormats.QuestStepObjective objective, QuestStep questStep, int id)
                 {
-                    Logger.Debug(" (QuestObjective ctor) creating an objective with ID {0}, QuestStepObjective {1} and QuestStep ID {2}", id, objective.Group1Name, questStep.QuestStepID);
+                    //Logger.Debug(" (QuestObjective ctor) creating an objective with ID {0}, QuestStepObjective {1} and QuestStep ID {2}", id, objective.Group1Name, questStep.QuestStepID);
                     ID = id;
                     this.objective = objective;
                     this.questStep = questStep;
@@ -187,7 +187,7 @@ namespace Mooege.Core.GS.Games
 
             private void UpdateCounter(QuestObjective objective)
             {
-                 Logger.Debug(" (UpdateCounter) is _questStep unassiagned ? {0}", (_questStep is Mooege.Common.MPQ.FileFormats.QuestUnassignedStep == false) );
+                Logger.Debug(" (UpdateCounter) is _questStep unassiagned ? {0}", (_questStep is Mooege.Common.MPQ.FileFormats.QuestUnassignedStep == false) );
                 if (_questStep is Mooege.Common.MPQ.FileFormats.QuestUnassignedStep == false)
                 {
                     Logger.Debug(" (UpdateCounter) calling updateCounter snoQuest {0}, step ID {1}, TaskIndex {2}, counter {3}, Checked {4}", _quest.SNOHandle.Id, _questStep.ID, objective.ID, objective.Counter, objective.Done ? 1 : 0);
@@ -263,33 +263,36 @@ namespace Mooege.Core.GS.Games
 
                 }
 
-                Logger.Debug(" (questStep ctor) Displaying objectives sets for quest {0} in step {1} (if any) ", quest.SNOHandle, quest.CurrentStep);
-
-                int i = 0;
-                foreach (var objective_set in ObjectivesSets)
+                if (quest.SNOHandle.Id == 72095)
                 {
-                    Logger.Debug(" ObjectiveSet number {0}", i++);
-                    foreach (var objective in objective_set.Objectives)
-                    {
-                        Logger.Debug("(questStep ctor) % objective has ID {0}, type {1}, value {2}, counter {4}, sub quest step {3} ", objective.ID, objective.ObjectiveType, objective.ObjectiveValue, objective.questStep.QuestStepID, objective.Counter);
-                        Logger.Debug("(questStep ctor) % objective in string is {0}", objective.ToString());
-                    }
-                }
+                    Logger.Debug(" (questStep ctor) Displaying objectives sets for quest {0}-{1}  in step {2} (if any) ", quest.SNOHandle.Id, quest.SNOHandle.Name, quest.CurrentStep);
 
-                Logger.Debug(" (questStep ctor) Displaying bonus objectives for quest {0} in step {1} (if any) ", quest.SNOHandle, quest.CurrentStep);
-
-                i = 0;
-                foreach (var bonus_objective_set in bonusObjectives)
-                {
-                    Logger.Debug(" Bonus Objective list number {0}", i++);
-                    foreach (var bonus_objective in bonus_objective_set)
+                    int i = 0;
+                    foreach (var objective_set in ObjectivesSets)
                     {
-                        Logger.Debug("(questStep ctor) % bonus objective has ID {0}, type {1}, value {2}, counter {4}, sub quest step {3} ", bonus_objective.ID, bonus_objective.ObjectiveType, bonus_objective.ObjectiveValue, bonus_objective.questStep.QuestStepID, bonus_objective.Counter);
-                        Logger.Debug("(questStep ctor) % bonus objective in string is {0}", bonus_objective.ToString());
+                        Logger.Debug(" ObjectiveSet number {0}", i++);
+                        foreach (var objective in objective_set.Objectives)
+                        {
+                            Logger.Debug("(questStep ctor) % objective has ID {0}, type {1}, value {2}, counter {4}, sub quest step {3} ", objective.ID, objective.ObjectiveType, objective.ObjectiveValue, objective.questStep.QuestStepID, objective.Counter);
+                            Logger.Debug("(questStep ctor) % objective in string is {0}", objective.ToString());
+                        }
                     }
+
+                    Logger.Debug(" (questStep ctor) Displaying bonus objectives for quest {0} in step {1} (if any) ", quest.SNOHandle, quest.CurrentStep);
+
+                    i = 0;
+                    foreach (var bonus_objective_set in bonusObjectives)
+                    {
+                        Logger.Debug(" Bonus Objective list number {0}", i++);
+                        foreach (var bonus_objective in bonus_objective_set)
+                        {
+                            Logger.Debug("(questStep ctor) % bonus objective has ID {0}, type {1}, value {2}, counter {4}, sub quest step {3} ", bonus_objective.ID, bonus_objective.ObjectiveType, bonus_objective.ObjectiveValue, bonus_objective.questStep.QuestStepID, bonus_objective.Counter);
+                            Logger.Debug("(questStep ctor) % bonus objective in string is {0}", bonus_objective.ToString());
+                        }
+                    }
+                    Logger.Debug("(questStep ctor)  _questStep ID{0} ", _questStep.ID);
+                    //Logger.Debug("(questStep ctor)  _quest SNOHandle{0} CurrentStep Q", _quest.SNOHandle, _quest.CurrentStep.QuestStepID);
                 }
-                Logger.Debug("(questStep ctor)  _questStep ID{0} ", _questStep.ID);
-                //Logger.Debug("(questStep ctor)  _quest SNOHandle{0} CurrentStep Q", _quest.SNOHandle, _quest.CurrentStep.QuestStepID);
             }
 
             public void NotifyBonus(Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType type, int value)
@@ -364,25 +367,26 @@ namespace Mooege.Core.GS.Games
                 if (QCSasset != null)
                 {
                     var nQCS = new QuestCompletionStep(QCSasset);
-                    QuestCompletionSteps.Add( nQCS );
-                    Logger.Debug(" (quest ctor)  adding a completion step {0}, {1}, {2} ", nQCS.Name, nQCS.StepId, nQCS.I2);
+                    QuestCompletionSteps.Add(nQCS);
+                    // Logger.Debug(" (quest ctor)  adding a completion step {0}, {1}, {2} ", nQCS.Name, nQCS.StepId, nQCS.I2);
                 }
                 else
                 {
-                    Logger.Debug(" (quest ctor)  asset null problem in QCS ");
+                    // Logger.Debug(" (quest ctor)  asset null problem in QCS ");
                 }
 
             }
 
-            foreach (var aQuestStep in asset.QuestSteps)
-            {
-                Logger.Debug(" (quest ctor) steps ID contained in quest is : {0} ", aQuestStep.ID);
-            }
+            //foreach (var aQuestStep in asset.QuestSteps)
+            //{
+            //     Logger.Debug(" (quest ctor) steps ID contained in quest is : {0} ", aQuestStep.ID);
+            //}
 
 
-            Logger.Debug(" (quest ctor)  SNOHandle ID {0} Name {1}  Group {2} isValid ?{3} ", SNOHandle.Id, SNOHandle.Name, SNOHandle.Group, SNOHandle.IsValid);
-            Logger.Debug(" (quest ctor)  from assets  numSteps {0}, SNO ID {1} num od completion step  ", asset.NumberOfSteps, asset.Header.SNOId, asset.NumberOfCompletionSteps);
-            Logger.Debug(" (quest ctor)  CurrentStep ID ", CurrentStep.QuestStepID);
+            // Logger.Debug(" (quest ctor)  SNOHandle ID {0} Name {1}  Group {2} isValid ?{3} ", SNOHandle.Id, SNOHandle.Name, SNOHandle.Group, SNOHandle.IsValid);
+            // Logger.Debug(" (quest ctor)  from assets  numSteps {0}, SNO ID {1} num od completion step  ", asset.NumberOfSteps, asset.Header.SNOId, asset.NumberOfCompletionSteps);
+            // Logger.Debug(" (quest ctor)  CurrentStep ID ", CurrentStep.QuestStepID);
+            
         }
 
         // 
@@ -392,18 +396,24 @@ namespace Mooege.Core.GS.Games
         }
 
         //erekose
-        public bool IsDone()
+       public bool IsDone()
        { 
-            //Logger.Debug(" (IsDone) called for quest SNO {0}", SNOHandle.Id);
-            //Logger.Debug(" (IsDone) Completed Steps are : {0} ", string.Concat<string>( completedSteps.Cast<String>()));
+            //
+           
+            // Logger.Debug(" (IsDone) Completed Steps are : {0} ", string.Concat<string>( completedSteps.Cast<String>()));
+
+            if (completedSteps.Count == 0)
+                return false;
+
             foreach (var qcs in QuestCompletionSteps)
             {
                 if (!completedSteps.Contains(qcs.StepId))
                 {
-                    // Logger.Debug(" (IsDone) can't find {0} in completedSTeps", qcs.StepId);
+                    Logger.Debug(" (IsDone) can't find {0} in completedSTeps", qcs.StepId);
                     return false;
                 }
             }
+            Logger.Debug(" (IsDone) called for quest SNO {0} returning true !! ", SNOHandle.Id);
             return true;
         }
 
@@ -419,7 +429,7 @@ namespace Mooege.Core.GS.Games
 
         public void StepCompleted(int FollowUpStepID)
         {
-            Logger.Debug(" (StepCompleted) snoQUest {0} StepID {1}", SNOHandle.Id, FollowUpStepID);
+            Logger.Debug(" (StepCompleted) snoQUest {0}--{1} and follow up has StepID {2}", SNOHandle.Id, SNOHandle.Name, FollowUpStepID);
             
             foreach (var player in game.Players.Values)
                 player.InGameClient.SendMessage(new QuestUpdateMessage()
@@ -438,17 +448,19 @@ namespace Mooege.Core.GS.Games
             {
                 Logger.Debug(" (StepCompleted) All objective have been reached Quest is Done ");
                 CurrentStep = null;
+                OnQuestProgress(this); // force update since it is a quest progress (in a ceratin way :p)
                 // somehow we should remove something from somehting else
             }
             else
             {
                 if ( QuestCompletionSteps.Exists( qc => qc.StepId == FollowUpStepID ) )
                 {
-                    Logger.Debug(" (StepCompleted) addin the EndingQuestStep ");
+                    Logger.Debug(" (StepCompleted) addin the EndingQuestStep {0}: ", FollowUpStepID);
                     CurrentStep = null;
                     completedSteps.Add(FollowUpStepID);
-                    Logger.Debug(" (StepCompleted) shooting the event handler");                    
-                    OnQuestProgress -= OnQuestProgress; 
+                    OnQuestProgress(this);
+                    // Logger.Debug(" (StepCompleted) shooting the event handler");                    
+                    // OnQuestProgress -= OnQuestProgress;  
                 }
                 else
                 {

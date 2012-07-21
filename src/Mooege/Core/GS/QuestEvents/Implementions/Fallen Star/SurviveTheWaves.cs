@@ -43,7 +43,7 @@ namespace Mooege.Core.GS.QuestEvents.Implementations
         private static readonly Logger Logger = LogManager.CreateLogger();
 
         public SurviveTheWaves()
-            : base(151087)
+            : base(151087)    // 198199 // 80088  // 151102
         {
         }
 
@@ -56,7 +56,8 @@ namespace Mooege.Core.GS.QuestEvents.Implementations
             ////Disable RumFord so he doesn't offer the quest. Somehow, hes supposed to mark it as readed and not offer it while theres no other quest available but he does,
             ////so you can trigger the event multiple times while the event is already running, therefor, we disable his interaction till the event is done.-Wesko
 
-            setActorOperable(world, 3739, false);
+            // setActorOperable(world, 3739, false); // no need for it now the update conversation list is laucnhed once the conversation is marked as read :p
+
             //Start the conversation between RumFord & Guard.
             StartConversation(world, 198199);
             //After Conversations ends!.
@@ -98,7 +99,7 @@ namespace Mooege.Core.GS.QuestEvents.Implementations
                     StartConversation(world, 151102);
                     world.Game.Quests.Advance(87700);
                     Logger.Debug("Event finished");
-                    setActorOperable(world, 3739, true);
+                    // setActorOperable(world, 3739, true);
                 });
             });
 

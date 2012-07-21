@@ -115,8 +115,12 @@ namespace Mooege.Core.GS.Games
         public bool HasCurrentQuest(int snoQuest, int Step)
         {
             if (Quests.ContainsKey(snoQuest))
+            {
+                if (Quests[snoQuest].CurrentStep == null) // when quest are done :p erekose's hack (the completion step IS NOT QuestStep... maybe we should have a "dummy" quest step
+                    return false;
                 if (Quests[snoQuest].CurrentStep.QuestStepID == Step || Step == -1)
                     return true;
+            }
 
             return false;
         }
@@ -142,7 +146,11 @@ namespace Mooege.Core.GS.Games
             {
                 if (Quests.ContainsKey(range.Start.SNOQuest))
                 {
-                    if (Quests[range.Start.SNOQuest].HasStepCompleted(range.Start.StepID) || Quests[range.Start.SNOQuest].CurrentStep.QuestStepID == range.Start.StepID) // rumford conversation needs current step
+                    if (Quests[range.Start.SNOQuest].CurrentStep == null) // this means that we have finished the quest...
+                    {
+                        started = true;
+                    }
+                    else if (Quests[range.Start.SNOQuest].HasStepCompleted(range.Start.StepID) || Quests[range.Start.SNOQuest].CurrentStep.QuestStepID == range.Start.StepID) // rumford conversation needs current step
                         started = true;
                 }
                 //else logger.Warn("QuestRange {0} references unknown quest {1}", range.Header.SNOId, range.Start.SNOQuest);

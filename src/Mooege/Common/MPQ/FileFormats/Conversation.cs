@@ -32,7 +32,7 @@ namespace Mooege.Common.MPQ.FileFormats
         public ConversationTypes ConversationType { get; private set; }
         public int I0 { get; private set; }            // looks like the conversation icon, its 1 for important quest conversations, 0 otherwise
         public int I1 { get; private set; }
-        public int SNOQuest { get; private set; }
+        public int SNOQuest { get; private set; }      // erekose to me it looks like this is available while in SNOQuest or if SNOQuest is done... or it is the main quest selected somewhere....
         public int I2 { get; private set; }
         public int I3 { get; private set; }
         public int SNOConvPiggyback { get; private set; }

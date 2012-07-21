@@ -29,11 +29,14 @@ using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
 using Mooege.Common.Helpers.IO;
+using Mooege.Common.Logging;
 
 namespace Mooege.Common.Storage.AccountDataBase
 {
     public class SessionProvider
     {
+        private static readonly Logger Logger = LogManager.CreateLogger();
+
         private static ISessionFactory _sessionFactory;
         private static Configuration _config;
         private static readonly object Lockobj = new object();
@@ -64,6 +67,8 @@ namespace Mooege.Common.Storage.AccountDataBase
                     {
                         var newvalue = prop.Value;
                         newvalue = newvalue.Replace("{$ASSETBASE}", DBManager.AssetDirectory);
+                        Logger.Debug(" (Configuration) has newvalue  {0}", newvalue);
+
                         replacedProperties.Add(prop.Key, newvalue);
                     }
 

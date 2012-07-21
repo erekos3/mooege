@@ -86,6 +86,12 @@ namespace Mooege.Core.GS.Common.Types.TagMap
         public bool ContainsKey(TagKey key) { return _tagMapEntries.ContainsKey(key.ID); }
 
         public void Add(TagKey key, TagMapEntry entry) { _tagMapEntries.Add(key.ID, entry); }
+        
+        public void Replace(TagKey key, TagMapEntry entry) // erekose
+        { 
+            if ( _tagMapEntries.ContainsKey(key.ID) )
+                _tagMapEntries[key.ID] = entry;     
+        } 
 
 
         public void Read(MpqFileStream stream)
@@ -100,7 +106,7 @@ namespace Mooege.Core.GS.Common.Types.TagMap
             }
         }
 
-        #region accessors
+        #region accessors        
 
         public int this[TagKeyInt key]
         {
@@ -135,7 +141,7 @@ namespace Mooege.Core.GS.Common.Types.TagMap
             get
             {
                 return key.GetValue(_tagMapEntries[key.ID]);
-            }
+            }            
         }
 
         public GizmoGroup this[TagKeyGizmoGroup key]

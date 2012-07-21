@@ -28,53 +28,28 @@ using Mooege.Core.GS.Generators;
 using Mooege.Common.Logging;
 using System.Threading.Tasks;
 using System.Threading;
-using Mooege.Core.GS.Map;
-using Mooege.Core.GS.Common.Types.TagMap;
+
 
 namespace Mooege.Core.GS.QuestEvents.Implementations
 {
-    class _198521 : QuestEvent  // RumfordProtectorEnd_New and be careful as this shit is also supposed to trigger the next event with leah..TEH HELL
+    class _198541 : QuestEvent  // TalkLeah
     {
 
         private static readonly Logger Logger = LogManager.CreateLogger();
-        
 
-        public _198521()
-            : base(198521)
+
+        public _198541()
+            : base(198541)
         {
         }
 
-        static int rumfordAID = 3739;  // rumford ACTOR SNO
-        static int questSNO   = 87700; // ProtectorOfTristram
-        static int leahAID    = 4580;
+        
+        static int questSNO = 72095; // ProtectorOfTristram
 
         public override void Execute(Map.World world)
-        {
-            
-
-            StartConversation(world, 198521);
-            Logger.Debug(" Conversation done ");
-            
-            //okay now we send a notify with QuestEvent for every one
-            //world.Game.Quests.Notify(QuestStepObjectiveType.CompleteQuest, 87700);
-            //StartConversation(world, 198541);
-            
-            //force leah to have a specific conversation list :p
-            // var actor = world.GetActorBySNO(4580);        
-            //actor.
-            // actor.Tags.Add(MarkerKeys.ConversationList, new TagMapEntry( 198541, 108832, 2)); // erekose trying to add manually the conversation to leah's conversation list                        
-
-            //foreach (var player in world.Players)
-            //{
-            //    player.Value.InGameClient.SendMessage(new Mooege.Net.GS.Message.Definitions.Quest.QuestMeterMessage()
-            //    {
-            //        snoQuest = 87700,
-            //        Field1 = 2,
-            //        Field2 = 10.0f
-
-            //    });
-            //};
-
+        {           
+            Logger.Debug(" RESCUE CAIN QUEST STARTED ");
+            StartConversation(world, 198541);
 
         }
 

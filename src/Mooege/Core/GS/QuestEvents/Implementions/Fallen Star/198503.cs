@@ -37,7 +37,7 @@ namespace Mooege.Core.GS.QuestEvents.Implementations
         private static readonly Logger Logger = LogManager.CreateLogger();
 
         public _198503()
-            : base(198503)
+            : base(198503) // 156223
         {
         }
 
@@ -122,8 +122,9 @@ namespace Mooege.Core.GS.QuestEvents.Implementations
                     {                        
                         // ok set a boss health bar for the bitch :;p
                         actorWQM.Attributes[Net.GS.Message.GameAttribute.Using_Bossbar] = true;
-                        actorWQM.Attributes[Net.GS.Message.GameAttribute.InBossEncounter] = true; // there also an attribute about QuestMonster
-                        
+                        // actorWQM.Attributes[Net.GS.Message.GameAttribute.InBossEncounter] = true; // there also an attribute about QuestMonster
+                        // DOES NOT WORK it hsould be champion affixes or shit of this kind ...
+
                         //Run Kill Event Listener
                         var ListenerWQMTask = Task<bool>.Factory.StartNew(() => OnWMQKillListener(actorWQM.DynamicID, world));
                         
@@ -237,27 +238,27 @@ namespace Mooege.Core.GS.QuestEvents.Implementations
                     if (actor.Attributes[Net.GS.Message.GameAttribute.Gizmo_Has_Been_Operated])
                     {
                         // for some obnoxious reason we should shoot the poor rumfeld here                       
-                        var actorToShoot = world.GetActorBySNO(3739);
-                        if (actorToShoot != null)
-                        {
-                            Logger.Debug("trying to shoot actor SNO {0}, world contains {1} such actors ", actorToShoot.ActorSNO, world.GetActorsBySNO(3739).Count);
-                            world.Leave(actorToShoot); // or directly remove this shit
-                        }
-                        else
-                        {
-                            Logger.Debug("No actor to shoot yet");
-                        }
+                        //var actorToShoot = world.GetActorBySNO(3739);
+                        //if ( (actorToShoot != null)) //  && (world.GetActorsBySNO(3739).Count > 1) )
+                        //{
+                        //    Logger.Debug("trying to shoot actor SNO {0}, world contains {1} such actors ", actorToShoot.ActorSNO, world.GetActorsBySNO(3739).Count);
+                        //    world.Leave(actorToShoot); // or directly remove this shit
+                        //}
+                        //else
+                        //{
+                        //    Logger.Debug("No actor to shoot yet");
+                        //}
 
-                        actorToShoot = world.GetActorBySNO(4580);
-                        if (actorToShoot != null)
-                        {
-                            Logger.Debug("trying to shoot actor SNO {0}, world contains {1} such actors ", actorToShoot.ActorSNO, world.GetActorsBySNO(3739).Count);
-                            world.Leave(actorToShoot); // or directly remove this shit
-                        }
-                        else
-                        {
-                            Logger.Debug("No actor to shoot yet");
-                        }
+                        //actorToShoot = world.GetActorBySNO(4580);
+                        //if (actorToShoot != null)
+                        //{
+                        //    Logger.Debug("trying to shoot actor SNO {0}, world contains {1} such actors ", actorToShoot.ActorSNO, world.GetActorsBySNO(3739).Count);
+                        //    world.Leave(actorToShoot); // or directly remove this shit
+                        //}
+                        //else
+                        //{
+                        //    Logger.Debug("No actor to shoot yet");
+                        //}
 
 
                         world.Game.Quests.NotifyQuest(87700, Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor, portalAID);

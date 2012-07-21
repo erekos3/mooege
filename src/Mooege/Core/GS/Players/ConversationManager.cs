@@ -254,7 +254,7 @@ namespace Mooege.Core.GS.Players
                 if (this.manager.QuestEventDict.ContainsKey((uint)this.SNOId))
                 {
                     logger.Info(" (EndConversation) Start cov");
-                    this.manager.QuestEventDict[(uint)this.SNOId].Execute(this.player.World);
+                    this.manager.QuestEventDict[(uint)this.SNOId].Execute(this.player.World); // launch a questEvent
                 }
                 else
                 {
@@ -375,11 +375,16 @@ namespace Mooege.Core.GS.Players
         {
             // this is were we store the active quests when they are implemented 
             // warning the number here should match that of conversation which ARE considered as QuestEvent from the asset db
+            
+            // protector of tristam 87700
+
             this.QuestEventDict.Add(151087, new SurviveTheWaves());
             this.QuestEventDict.Add(151123, new LeahInn());
             this.QuestEventDict.Add(198503, new _198503()); // erekose
             this.QuestEventDict.Add(198521, new _198521()); // erekose
-            
+
+            //rescue Cain  72095
+            this.QuestEventDict.Add(198541, new _198541()); // erekose
         }
 
         /// <summary>
